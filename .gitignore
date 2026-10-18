@@ -1,0 +1,7 @@
+# Build outputs
+/build/
+
+# Editor and tool files
+/compile_flags.txt
+*.swp
+.DS_Store
