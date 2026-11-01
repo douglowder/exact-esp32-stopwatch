@@ -10,7 +10,7 @@ sketch for each app.
 | --- | --- |
 | `core/` | contract-cpp, as a submodule (it has exact2 as its own submodule) |
 | `rt-m5/` | The Stopwatch board (`contract_rt_m5`, an Arduino library): an M5GFX canvas, FreeSans, the USB serial link, buttons, touch, IMU, vibration, and the speaker's voice task (`rt_m5_speaker.cpp`, linked only by a sketch with sounds) |
-| `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome` |
+| `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome`, `skull` |
 | `tools/build.sh` | Builds an app |
 | `tools/flash.sh` | Writes an app to the board, with the board lock |
 
