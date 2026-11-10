@@ -1,16 +1,16 @@
-# contract-stopwatch
+# exact-esp32-stopwatch
 
-Contract apps on the M5Stack Stopwatch (ESP32-S3). The apps, `plan2cpp` and the `contract_rt`
-core are in contract-cpp, the `core/` submodule. This repo has the Stopwatch's board and a
+Exact apps on the M5Stack Stopwatch (ESP32-S3). The apps, `plan2cpp` and the `contract_rt`
+core are in exact-cpp, the `core/` submodule. This repo has the Stopwatch's board and a
 sketch for each app.
 
 ## Layout
 
 | Path | What it is |
 | --- | --- |
-| `core/` | contract-cpp, as a submodule (it has exact2 as its own submodule) |
+| `core/` | exact-cpp, as a submodule (it has expo/exact as its own submodule, `core/exact`) |
 | `rt-m5/` | The Stopwatch board (`contract_rt_m5`, an Arduino library): an M5GFX canvas, FreeSans, the USB serial link, buttons, touch, IMU, vibration, and the speaker's voice task (`rt_m5_speaker.cpp`, linked only by a sketch with sounds) |
-| `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome` |
+| `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome`, `skull` |
 | `tools/build.sh` | Builds an app |
 | `tools/flash.sh` | Writes an app to the board, with the board lock |
 
@@ -24,7 +24,7 @@ tools/flash.sh level /dev/cu.usbmodemNNNN
 
 `build.sh` puts the sketch and the app's C++ from `core/apps/<app>/cpp/` in `build/<app>/<app>/`
 and compiles it with `core/rt` and `rt-m5` as libraries. It needs `arduino-cli` with the
-`esp32:esp32` core, M5Unified and M5GFX. To change an app, edit it in contract-cpp, generate its
+`esp32:esp32` core, M5Unified and M5GFX. To change an app, edit it in exact-cpp, generate its
 C++ there, and move the `core` submodule.
 
 `flash.sh` holds `/tmp/esptember-m5stopwatch.lock` while it writes, and stops if another
@@ -44,10 +44,11 @@ python3 -I core/tools/agent.py /dev/cu.usbmodemNNNN stats
 python3 -I core/tools/agent.py /dev/cu.usbmodemNNNN screenshot out.png
 ```
 
-## Sizes (2026-10-18, core cf6b52b)
+## Sizes (2026-11-10, core 473df0a)
 
 | App | Program storage |
 | --- | --- |
-| level | 878,247 bytes |
-| badge | 1,609,335 bytes |
-| metronome | 885,155 bytes |
+| level | 878,995 bytes |
+| badge | 1,610,683 bytes |
+| metronome | 885,899 bytes |
+| skull | 2,058,963 bytes |
