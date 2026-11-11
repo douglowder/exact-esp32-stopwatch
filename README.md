@@ -105,13 +105,13 @@ exact-cpp/mac/build/ExactMac level   # a window: arrows, Return, Escape, the mou
 
 An app's Exact source is `exact-cpp/apps/<app>/app.contract`. Edit it in exact-cpp, generate its C++ there with `plan2cpp` (see exact-cpp's README), commit, and move this repo's `exact-cpp` submodule to that commit. A new app also needs a sketch in `sketches/<app>/`.
 
-## Sizes (2026-11-10, exact-cpp 98c93f6)
+## Sizes (2026-11-11, exact-cpp e609944)
 
 | App | Program storage |
 | --- | --- |
-| level | 878,995 bytes |
-| badge | 1,610,683 bytes |
-| metronome | 885,899 bytes |
+| level | 890,827 bytes |
+| badge | 1,622,703 bytes |
+| metronome | 897,683 bytes |
 
 ## License
 
