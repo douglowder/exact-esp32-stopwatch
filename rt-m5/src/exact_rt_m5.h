@@ -1,4 +1,4 @@
-// The M5Stack Stopwatch (ESP32-S3) as a contract_rt board: an M5GFX canvas in
+// The M5Stack Stopwatch (ESP32-S3) as a exact_rt board: an M5GFX canvas in
 // PSRAM pushed to the 468 x 466 CO5300 panel, FreeSans faces, USB serial,
 // BtnA/BtnB through the chord grammar, CST820 touch, the BMI270
 // accelerometer, the vibration motor, and, for an app with sounds, the speaker.
@@ -12,7 +12,7 @@
 #include <deque>
 
 #include "buttons.h"
-#include "contract_rt.h"
+#include "exact_rt.h"
 
 namespace rt_m5 {
 

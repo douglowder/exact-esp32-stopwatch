@@ -1,11 +1,11 @@
 // A Halloween skull, Plan B: apps/skull/app.contract compiled to C++ by plan2cpp (app_gen.cpp)
-// over contract_rt, on the Stopwatch board (contract_rt_m5). It has no extensions and no
+// over exact_rt, on the Stopwatch board (exact_rt_m5). It has no extensions and no
 // sounds. The screen is turned 180 degrees, so the skull is upright when the board hangs as a
 // pendant; agent screenshots read the canvas, so they stay upright. Same agent lines as the Mac
 // host, so tools/agent.py drives both.
 #include <M5Unified.h>
-#include <contract_rt.h>
-#include <contract_rt_m5.h>
+#include <exact_rt.h>
+#include <exact_rt_m5.h>
 
 namespace app {
 extern const rt::App kApp;
