@@ -24,6 +24,6 @@ if ! (set -o noclobber; echo "exact-esp32-stopwatch flash.sh $$" >"$LOCK") 2>/de
   echo "flash.sh: $LOCK is held: $(cat "$LOCK")" >&2
   exit 1
 fi
-trap 'trash "$LOCK"' EXIT
+trap 'rm -f "$LOCK"' EXIT
 
 arduino-cli upload -p "$port" --fqbn "$FQBN" --input-dir "$bin" "$root/build/$app/$app"
