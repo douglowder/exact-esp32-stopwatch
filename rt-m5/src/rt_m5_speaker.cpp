@@ -6,7 +6,7 @@
 
 #include <algorithm>
 
-#include "contract_rt_m5.h"
+#include "exact_rt_m5.h"
 
 namespace rt_m5 {
 

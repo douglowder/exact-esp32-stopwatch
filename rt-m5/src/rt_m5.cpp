@@ -1,7 +1,7 @@
 // The Stopwatch board. Display: one PSRAM canvas the size of the panel, so an
 // area is drawn in place and pushed through a clip. Faces: FreeSans 9/12/18/24
 // pt (about CSS 18/24/36/48 px), bold from weight 600.
-#include "contract_rt_m5.h"
+#include "exact_rt_m5.h"
 
 #include <Preferences.h>
 #include <esp_heap_caps.h>

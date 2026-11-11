@@ -1,10 +1,10 @@
 // ESPtember Day 10 Level, Plan B: the app is apps/level/app.contract compiled
-// to C++ by plan2cpp (app_gen.cpp) over contract_rt, on the Stopwatch board
-// (contract_rt_m5), with the `attitude` extension (level_glue). No Rust runs on
+// to C++ by plan2cpp (app_gen.cpp) over exact_rt, on the Stopwatch board
+// (exact_rt_m5), with the `attitude` extension (level_glue). No Rust runs on
 // the device. Same agent lines as the path A firmware and the Mac host, so
 // tools/agent.py drives all three.
-#include <contract_rt.h>
-#include <contract_rt_m5.h>
+#include <exact_rt.h>
+#include <exact_rt_m5.h>
 
 #include "level_glue.h"
 

@@ -1,6 +1,6 @@
 # exact-esp32-stopwatch
 
-Exact apps on the M5Stack Stopwatch (ESP32-S3). The apps, `plan2cpp` and the `contract_rt`
+Exact apps on the M5Stack Stopwatch (ESP32-S3). The apps, `plan2cpp` and the `exact_rt`
 core are in exact-cpp, the `core/` submodule. This repo has the Stopwatch's board and a
 sketch for each app.
 
@@ -9,7 +9,7 @@ sketch for each app.
 | Path | What it is |
 | --- | --- |
 | `core/` | exact-cpp, as a submodule (it has expo/exact as its own submodule, `core/exact`) |
-| `rt-m5/` | The Stopwatch board (`contract_rt_m5`, an Arduino library): an M5GFX canvas, FreeSans, the USB serial link, buttons, touch, IMU, vibration, and the speaker's voice task (`rt_m5_speaker.cpp`, linked only by a sketch with sounds) |
+| `rt-m5/` | The Stopwatch board (`exact_rt_m5`, an Arduino library): an M5GFX canvas, FreeSans, the USB serial link, buttons, touch, IMU, vibration, and the speaker's voice task (`rt_m5_speaker.cpp`, linked only by a sketch with sounds) |
 | `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome`, `skull` |
 | `tools/build.sh` | Builds an app |
 | `tools/flash.sh` | Writes an app to the board, with the board lock |

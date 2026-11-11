@@ -1,6 +1,6 @@
 // The init() badge, Plan B: the app is apps/badge/app.contract compiled to
-// C++ by plan2cpp (app_gen.cpp) over contract_rt, on the Stopwatch board
-// (contract_rt_m5). BtnA and BtnB arrive as ArrowLeft and ArrowRight,
+// C++ by plan2cpp (app_gen.cpp) over exact_rt, on the Stopwatch board
+// (exact_rt_m5). BtnA and BtnB arrive as ArrowLeft and ArrowRight,
 // holding both as Escape; touch arrives as taps and pans.
 //
 // The app's `init-badge` extension (badge_data) answers from what the badge
@@ -12,8 +12,8 @@
 // writes to the board's storage.
 #include <LittleFS.h>
 #include <Preferences.h>
-#include <contract_rt.h>
-#include <contract_rt_m5.h>
+#include <exact_rt.h>
+#include <exact_rt_m5.h>
 #include <esp_heap_caps.h>
 
 #include "badge_data.h"

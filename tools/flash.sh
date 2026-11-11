@@ -20,7 +20,7 @@ if [ ! -d "$bin" ]; then
   exit 1
 fi
 
-if ! (set -o noclobber; echo "contract-stopwatch flash.sh $$" >"$LOCK") 2>/dev/null; then
+if ! (set -o noclobber; echo "exact-esp32-stopwatch flash.sh $$" >"$LOCK") 2>/dev/null; then
   echo "flash.sh: $LOCK is held: $(cat "$LOCK")" >&2
   exit 1
 fi
