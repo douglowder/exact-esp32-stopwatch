@@ -105,7 +105,7 @@ exact-cpp/mac/build/ExactMac level   # a window: arrows, Return, Escape, the mou
 
 An app's Exact source is `exact-cpp/apps/<app>/app.contract`. Edit it in exact-cpp, generate its C++ there with `plan2cpp` (see exact-cpp's README), commit, and move this repo's `exact-cpp` submodule to that commit. A new app also needs a sketch in `sketches/<app>/`.
 
-## Sizes (2026-11-11, exact-cpp e609944)
+## Sizes (2026-11-11, exact-cpp 23f8a18)
 
 | App | Program storage |
 | --- | --- |
