@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds one app for the Stopwatch: tools/build.sh APP (level, badge or metronome).
+# Builds one app for the Stopwatch: tools/build.sh APP (level, badge, metronome or motion).
 # The sketch is sketches/APP/APP.ino with the app's C++ from exact-cpp/apps/APP/cpp/ beside
 # it, in build/APP/APP/. The binaries go to build/APP/bin/ (tools/flash.sh writes them to
 # the board).

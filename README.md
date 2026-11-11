@@ -10,7 +10,7 @@ To run the same apps on a Mac, with no board, see [On the Mac](#on-the-mac).
 | --- | --- |
 | `exact-cpp/` | exact-cpp, as a submodule (it has expo/exact as its own submodule, `exact-cpp/exact/`) |
 | `rt-m5/` | The Stopwatch board (`exact_rt_m5`, an Arduino library): an M5GFX canvas, FreeSans, the USB serial link, buttons, touch, IMU, vibration, and the speaker's voice task (`rt_m5_speaker.cpp`, linked only by a sketch with sounds) |
-| `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome` |
+| `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome`, `motion` |
 | `tools/build.sh` | Builds an app |
 | `tools/flash.sh` | Writes an app to the board, with the board lock |
 
@@ -53,7 +53,7 @@ In a clone made without `--recursive`, run `git submodule update --init --recurs
 ## Build
 
 ```sh
-tools/build.sh level        # or badge, metronome
+tools/build.sh level        # or badge, metronome, motion
 ```
 
 `build.sh` puts the sketch and the app's C++ from `exact-cpp/apps/<app>/cpp/` in `build/<app>/<app>/` and compiles it with `exact-cpp/rt` and `rt-m5` as libraries. The binaries go to `build/<app>/bin/`. The firmware uses the Arduino `app3M_fat9M_16MB` partition layout, with USB CDC on boot.
@@ -76,6 +76,7 @@ tools/flash.sh level /dev/cu.usbmodemNNNN
 | `level` | A bubble level from the IMU |
 | `badge` | The pages of the init() conference badge: the profile, schedule, party and settings |
 | `metronome` | A metronome: a tempo, Start and Stop, and an accented beat 1 on the speaker |
+| `motion` | A demo of CSS animations: easing, color and pulse scenes; A and B change scene, both pause |
 
 The two buttons are keys: BtnA is ArrowLeft, BtnB is ArrowRight, both pressed briefly are Enter, and both held for 600 ms are Escape. The screen takes touch.
 
@@ -112,6 +113,7 @@ An app's Exact source is `exact-cpp/apps/<app>/app.contract`. Edit it in exact-c
 | level | 890,827 bytes |
 | badge | 1,622,703 bytes |
 | metronome | 897,683 bytes |
+| motion | 883,635 bytes |
 
 ## License
 
