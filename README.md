@@ -68,7 +68,14 @@ arduino-cli board list      # a /dev/cu.usbmodemNNNN port
 tools/flash.sh level /dev/cu.usbmodemNNNN
 ```
 
-`flash.sh` holds `/tmp/esptember-m5stopwatch.lock` while it writes, and stops if another process holds it. Make sure no other process, such as a serial monitor, has the port open. After an upload the board sometimes stays dark until it is powered off and on. If the upload cannot connect, hold the power button about 2 s until the green LED comes on (download mode), flash, then power the board off and on.
+`flash.sh` holds `/tmp/esptember-m5stopwatch.lock` while it writes, and stops if another process holds it. Make sure no other process, such as a serial monitor, has the port open. If the upload cannot connect, hold the power button about 2 s until the green LED comes on (download mode), flash, then power the board off and on.
+
+**Power the board off and on after every upload.** `flash.sh` verifies the image and resets over RTS, and the board still comes back dark and answers nothing on the serial port: six uploads in a row behaved this way. Until it is power-cycled, a dark screen and a silent port say nothing about the firmware that was just written, so check this before reading anything into either.
+
+Two things on this board look like a dead cable and are not:
+
+- A connected board with no `/dev/cu.usbmodem*` port at all may be waiting for macOS to allow the accessory. The device enumerates and answers its descriptor, but `ioreg -r -c IOUSBHostDevice -w 0` shows it `!registered, !matched` with no interface children, so no serial device is created.
+- A host that opens the port without holding DTR and RTS low resets the chip, and the board is then gone until it is power-cycled. `tools/agent.py` and exact-cpp's `stream/` host both keep them low; anything else should too.
 
 ## Running an app with none compiled in
 
