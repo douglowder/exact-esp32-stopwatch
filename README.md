@@ -11,6 +11,7 @@ To run the same apps on a Mac, with no board, see [On the Mac](#on-the-mac).
 | `exact-cpp/` | exact-cpp, as a submodule (it has expo/exact as its own submodule, `exact-cpp/exact/`) |
 | `rt-m5/` | The Stopwatch board (`exact_rt_m5`, an Arduino library): an M5GFX canvas, FreeSans, the USB serial link, buttons, touch, IMU, vibration, and the speaker's voice task (`rt_m5_speaker.cpp`, linked only by a sketch with sounds) |
 | `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome`, `motion` |
+| `sketches/stream/stream.ino` | Runs any app with none compiled in: as a thin client for a Mac's pixels, or by receiving the app itself as a plan |
 | `tools/build.sh` | Builds an app |
 | `tools/flash.sh` | Writes an app to the board, with the board lock |
 
@@ -67,7 +68,66 @@ arduino-cli board list      # a /dev/cu.usbmodemNNNN port
 tools/flash.sh level /dev/cu.usbmodemNNNN
 ```
 
-`flash.sh` holds `/tmp/esptember-m5stopwatch.lock` while it writes, and stops if another process holds it. Make sure no other process, such as a serial monitor, has the port open. After an upload the board sometimes stays dark until it is powered off and on. If the upload cannot connect, hold the power button about 2 s until the green LED comes on (download mode), flash, then power the board off and on.
+`flash.sh` holds `/tmp/esptember-m5stopwatch.lock` while it writes, and stops if another process holds it. Make sure no other process, such as a serial monitor, has the port open. If the upload cannot connect, hold the power button about 2 s until the green LED comes on (download mode), flash, then power the board off and on.
+
+**Power the board off and on after every upload.** `flash.sh` verifies the image and resets over RTS, and the board still comes back dark and answers nothing on the serial port: six uploads in a row behaved this way. Until it is power-cycled, a dark screen and a silent port say nothing about the firmware that was just written, so check this before reading anything into either.
+
+Two things on this board look like a dead cable and are not:
+
+- A connected board with no `/dev/cu.usbmodem*` port at all may be waiting for macOS to allow the accessory. The device enumerates and answers its descriptor, but `ioreg -r -c IOUSBHostDevice -w 0` shows it `!registered, !matched` with no interface children, so no serial device is created.
+- A host that opens the port without holding DTR and RTS low resets the chip, and the board is then gone until it is power-cycled. `tools/agent.py` and exact-cpp's `stream/` host both keep them low; anything else should too.
+
+## Running an app with none compiled in
+
+`sketches/stream` compiles no app in at all. It works with
+[exact-cpp](https://github.com/douglowder/exact-cpp)'s `stream/` host in either of two ways:
+
+- **Thin client.** The app runs on the Mac, which sends each frame's damage as a packet of
+  pixels; BtnA, BtnB and touch go back the other way.
+- **Plan mode** (`--plan`). The Mac sends the app itself as a plan blob. The board reads it into
+  PSRAM, points each `CodeFn` at a trampoline into the `rt_vm` interpreter, and runs it here on
+  the Stopwatch with its own buttons and touch. Nothing of the app runs on the Mac, so the cable
+  can come out. The agent line is tunnelled through the stream protocol, so
+  `exact-cpp/tools/agent.py PTY state | key | screenshot` drives the runtime on the board.
+
+Either way a new app needs no flash. An AREA arriving while a plan runs ends the plan.
+
+```sh
+tools/build.sh stream
+tools/flash.sh stream /dev/cu.usbmodemNNNN
+# power the board off and on, then, from exact-cpp:
+exact-cpp/stream/tools/gen_vm.sh
+make -C exact-cpp/stream
+exact-cpp/stream/build/host/exact-stream --port /dev/cu.usbmodemNNNN metronome          # pixels
+exact-cpp/stream/build/host/exact-stream --plan --port /dev/cu.usbmodemNNNN metronome   # the plan
+```
+
+The host takes `next`, `app NAME`, `key ArrowRight` and `stats` on stdin. Measured on this
+board with the metronome app:
+
+| | |
+| --- | --- |
+| Firmware | 1,006,271 bytes, any app, either mode |
+| Full-screen keyframe (468 × 466) | 14,329 bytes; 16.9 ms to decode, 31.2 ms to push |
+| A tempo change (100 × 76) | 1,411 bytes; 0.3 ms to decode, 1.0 ms to push |
+| Key to panel, thin client | 6.4 ms median |
+
+In plan mode, with the metronome and knob apps:
+
+| | |
+| --- | --- |
+| Blob | knob 8,537 bytes, metronome 13,641 bytes |
+| Sent to running | knob 126.0 ms, metronome 145.5 ms |
+| Load / boot on the board | 1.7–2.0 ms / 98.3–101.8 ms |
+| First full paint | 37.7 ms to paint, 31.3 ms to push |
+| Key to panel | 9.4–14.3 ms |
+| Free after load | 228 KB internal, 7.01 MB PSRAM |
+
+`PlanBoard` gives the app no speaker, so an app with sounds is silent on the board in plan mode
+and the runtime reports `missing: ["speaker"]`. The Mac still plays them in thin-client mode.
+
+An app laid out for a smaller screen, such as `knob` at 412 × 412, is drawn at its own size with
+the rest of the panel left dark; plan mode does not scale.
 
 ## The apps
 
