@@ -11,7 +11,7 @@ To run the same apps on a Mac, with no board, see [On the Mac](#on-the-mac).
 | `exact-cpp/` | exact-cpp, as a submodule (it has expo/exact as its own submodule, `exact-cpp/exact/`) |
 | `rt-m5/` | The Stopwatch board (`exact_rt_m5`, an Arduino library): an M5GFX canvas, FreeSans, the USB serial link, buttons, touch, IMU, vibration, and the speaker's voice task (`rt_m5_speaker.cpp`, linked only by a sketch with sounds) |
 | `sketches/<app>/<app>.ino` | Each app's sketch: `level`, `badge`, `metronome`, `motion` |
-| `sketches/stream/stream.ino` | A thin client: the app runs on a Mac and this shows its pixels, so one build shows any app |
+| `sketches/stream/stream.ino` | Runs any app with none compiled in: as a thin client for a Mac's pixels, or by receiving the app itself as a plan |
 | `tools/build.sh` | Builds an app |
 | `tools/flash.sh` | Writes an app to the board, with the board lock |
 
@@ -70,12 +70,20 @@ tools/flash.sh level /dev/cu.usbmodemNNNN
 
 `flash.sh` holds `/tmp/esptember-m5stopwatch.lock` while it writes, and stops if another process holds it. Make sure no other process, such as a serial monitor, has the port open. After an upload the board sometimes stays dark until it is powered off and on. If the upload cannot connect, hold the power button about 2 s until the green LED comes on (download mode), flash, then power the board off and on.
 
-## Streaming an app from a Mac
+## Running an app with none compiled in
 
-`sketches/stream` compiles no app in at all. The app runs on a Mac, on
-[exact-cpp](https://github.com/douglowder/exact-cpp)'s `stream/` host, which sends each frame's
-damage as a packet of pixels; BtnA, BtnB and touch go back the other way. One build shows any
-app the host can run, and a new app needs no flash.
+`sketches/stream` compiles no app in at all. It works with
+[exact-cpp](https://github.com/douglowder/exact-cpp)'s `stream/` host in either of two ways:
+
+- **Thin client.** The app runs on the Mac, which sends each frame's damage as a packet of
+  pixels; BtnA, BtnB and touch go back the other way.
+- **Plan mode** (`--plan`). The Mac sends the app itself as a plan blob. The board reads it into
+  PSRAM, points each `CodeFn` at a trampoline into the `rt_vm` interpreter, and runs it here on
+  the Stopwatch with its own buttons and touch. Nothing of the app runs on the Mac, so the cable
+  can come out. The agent line is tunnelled through the stream protocol, so
+  `exact-cpp/tools/agent.py PTY state | key | screenshot` drives the runtime on the board.
+
+Either way a new app needs no flash. An AREA arriving while a plan runs ends the plan.
 
 ```sh
 tools/build.sh stream
@@ -83,7 +91,8 @@ tools/flash.sh stream /dev/cu.usbmodemNNNN
 # power the board off and on, then, from exact-cpp:
 exact-cpp/stream/tools/gen_vm.sh
 make -C exact-cpp/stream
-exact-cpp/stream/build/host/exact-stream --port /dev/cu.usbmodemNNNN metronome
+exact-cpp/stream/build/host/exact-stream --port /dev/cu.usbmodemNNNN metronome          # pixels
+exact-cpp/stream/build/host/exact-stream --plan --port /dev/cu.usbmodemNNNN metronome   # the plan
 ```
 
 The host takes `next`, `app NAME`, `key ArrowRight` and `stats` on stdin. Measured on this
@@ -91,13 +100,27 @@ board with the metronome app:
 
 | | |
 | --- | --- |
-| Firmware | 612,687 bytes, any app |
+| Firmware | 1,006,271 bytes, any app, either mode |
 | Full-screen keyframe (468 × 466) | 14,329 bytes; 16.9 ms to decode, 31.2 ms to push |
 | A tempo change (100 × 76) | 1,411 bytes; 0.3 ms to decode, 1.0 ms to push |
-| Key to panel | 6.4 ms median over three presses |
+| Key to panel, thin client | 6.4 ms median |
 
-Plan mode, where the board receives the app itself and runs it through the `rt_vm` interpreter,
-is not in this sketch yet; it needs `exact-cpp/rt-vm` and the app's fonts on the board.
+In plan mode, with the metronome and knob apps:
+
+| | |
+| --- | --- |
+| Blob | knob 8,537 bytes, metronome 13,641 bytes |
+| Sent to running | knob 126.0 ms, metronome 145.5 ms |
+| Load / boot on the board | 1.7–2.0 ms / 98.3–101.8 ms |
+| First full paint | 37.7 ms to paint, 31.3 ms to push |
+| Key to panel | 9.4–14.3 ms |
+| Free after load | 228 KB internal, 7.01 MB PSRAM |
+
+`PlanBoard` gives the app no speaker, so an app with sounds is silent on the board in plan mode
+and the runtime reports `missing: ["speaker"]`. The Mac still plays them in thin-client mode.
+
+An app laid out for a smaller screen, such as `knob` at 412 × 412, is drawn at its own size with
+the rest of the panel left dark; plan mode does not scale.
 
 ## The apps
 
